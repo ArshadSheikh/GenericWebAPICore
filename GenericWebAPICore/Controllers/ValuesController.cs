@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DynamicAndGenericControllersSample.DB;
+using GenericWebAPICore.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynamicAndGenericControllersSample.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class BaseController<T> : Controller where T : class
     {

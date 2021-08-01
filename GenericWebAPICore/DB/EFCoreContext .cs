@@ -1,5 +1,7 @@
 ﻿using DynamicAndGenericControllersSample.Models;
+using GenericWebAPICore.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 
@@ -10,9 +12,15 @@ namespace DynamicAndGenericControllersSample.DB
 {
     public class EFCoreContext : DbContext
     {
+        IOptions<AppSettings> AppSettings = null;
+        public EFCoreContext(IOptions<AppSettings> appSettings)
+        {
+            AppSettings = appSettings;
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("data source=DESKTOP-DMRP32O\\RNRDATALEX; initial catalog=GenericAPI_DB; integrated security=True;");
+            optionsBuilder.UseSqlServer(AppSettings.Value.ConectionString);
+            // "data source=DESKTOP-DMRP32O\\RNRDATALEX; initial catalog=GenericAPI_DB; integrated security=True;"
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -79,6 +87,31 @@ namespace DynamicAndGenericControllersSample.DB
 
                 entity.Property(e => e.Title)
                     .HasMaxLength(255)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<UserMaster>(entity =>
+            {
+                entity.ToTable("UserMaster");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FirstName)
+                    .HasMaxLength(90)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LastName)
+                    .HasMaxLength(90)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(90)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(90)
                     .IsUnicode(false);
             });
         }
@@ -249,6 +282,16 @@ namespace DynamicAndGenericControllersSample.DB
         public TEntity GetSingle(Func<TEntity, bool> predicate)
         {
             return DbSet.Single<TEntity>(predicate);
+        }
+
+        /// <summary>
+        /// Gets a single record by the specified criteria (usually the unique identifier)
+        /// </summary>
+        /// <param name="predicate">Criteria to match on</param>
+        /// <returns>A single record that matches the specified criteria</returns>
+        public TEntity GetSingleOrDefault(Func<TEntity, bool> predicate)
+        {
+            return DbSet.SingleOrDefault<TEntity>(predicate);
         }
 
         /// <summary>
