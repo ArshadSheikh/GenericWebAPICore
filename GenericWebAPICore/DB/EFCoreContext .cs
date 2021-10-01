@@ -248,7 +248,7 @@ namespace DynamicAndGenericControllersSample.DB
         /// <returns></returns>
         public virtual IEnumerable<TEntity> GetAll()
         {
-            return DbSet.AsNoTracking().AsQueryable().Include("Album").ToList();//.ToList();
+            return DbSet.ToList();
         }
 
         /// <summary>

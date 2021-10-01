@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DynamicAndGenericControllersSample.DB;
 using GenericWebAPICore.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace DynamicAndGenericControllersSample.Controllers
 {
@@ -20,6 +21,7 @@ namespace DynamicAndGenericControllersSample.Controllers
         }
 
         [HttpGet]
+        [EnableQuery]
         public IEnumerable<T> GetAll()
         {
             return _storage.GetAll();
